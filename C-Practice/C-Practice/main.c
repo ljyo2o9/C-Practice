@@ -1,61 +1,20 @@
-// 유한 소수 판별하기
 #include <stdio.h>
-#include <stdbool.h>
-#include <stdlib.h>
 
-int sosu(int d){  //7 // 2 ~ 6 //
-    int suu = 0;
-    if(d == 2) return 0;
-    if(d == 5) return 0;
-    for(int i=2; i<d; i++){
-        if(d % i == 0){
-            if(i % 2 == 0){
-                suu++;
-            } else if (i % 5 == 0){
-                suu++;
-            } else {
-                return 1;
-            }
-        }
-    }
+int main(void){
+    int a, b, c, avg = 0;
+    scanf("%d %d %d", &a, &b, &c);
     
-    if(suu > 0){
-        return 0;
+    if(a > b){
+        if(a < c) avg = a;
+        else if (c > b) avg = c;
+        else avg = b;
     } else {
-        return 1;
-    }
-}
-
-int solution(int a, int b) {
-    int answer = 0;
-    
-    if(b % a == 0){
-        b = b / a;
-        a = 1;
-    }
- 
-    for(int i = (a/2) + 1; i>1; i--){
-        if(a == 1) break;
-        else if(b % i == 0 && a % i == 0){
-            a = a/i;
-            b = b/i;
-            
-            i++;
-        }
+        if(b < c) avg = b;
+        else if (c > a) avg = c;
+        else avg = a;
     }
     
-    printf("--%d--%d--", a, b);
+    printf("%d\n", avg);
     
-    if(a == b || a % b == 0) {
-        answer = 1;
-        return answer;
-    }
-    if(sosu(b) == 1){
-        answer = 2;
-    } else {
-        answer = 1;
-    }
-    printf("---%d---", answer);
-            
-    return answer;
+    return 0;
 }
