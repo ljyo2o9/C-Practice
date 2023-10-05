@@ -1,96 +1,74 @@
+
 #include<stdio.h>
 #include<string.h>
-#define MAX_SIZE 100
+#define MAX_STACK_SIZE 100
 
 struct stacks {
-    int stack[MAX_SIZE];
+    char stack[MAX_STACK_SIZE];
     int top;
 };
 
-// 스택 초기화
-void init_stack(struct stacks *st) {
+//스택 작성
+void init_stacks(struct stacks* st){
     st->top = -1;
 }
 
-// 스택이 비어있는지 확인
-int is_empty(struct stacks *st) {
+int is_empty(struct stacks* st){
     return (st->top == -1);
 }
 
-// 스택이 꽉 찼는지 확인
-int is_full(struct stacks *st) {
-    return (st->top == MAX_SIZE - 1);
+int is_full(struct stacks* st){
+    return (st->top == MAX_STACK_SIZE - 1);
 }
 
-// 스택에 원소 삽입
-void push(struct stacks *st, int item) {
-    if (is_full(st)) {
-        printf("Stack is full.\n");
-    } else {
+void push(struct stacks* st, int item){
+    if(is_full(st)) printf("stacks is full");
+    else {
         st->stack[++(st->top)] = item;
     }
 }
 
-// 스택에서 원소 제거 및 반환
-int pop(struct stacks *st) {
-    if (is_empty(st)) {
-        printf("Stack is empty.\n");
-        return -1;
+int pop(struct stacks *st){
+    if(is_empty(st)){
+        printf("stacks is empty");
+        return -99999;
     } else {
         return st->stack[(st->top)--];
     }
 }
 
-// 후위표기식 계산
-int calc_postfix(char exp[]) {
+
+int is_match(char* c) {
     struct stacks st;
-    int first, second, value;
-    long long int len = strlen(exp);
-    char c;
+    char ch, open;
+    long int length = strlen(c);
+    init_stacks(&st);
 
-    init_stack(&st);
-
-    for (int i = 0; i < len; i++) {
-        c = exp[i];
-
-        if(c >= '0' && c <= '9') push(&st,c-'0');
-        else{
-            second = pop(&st);
-            first = pop(&st) + 0.0;
-
-            switch(c){
-                case '+':
-                    value = first + second;
-                    break;
-
-                case '-':
-                    value = first - second;
-                    break;
-
-                case '*':
-                    value = first * second;
-                    break;
-
-                case '/':
-                    value = first / second;
-                    break;
-                default:
-                    value = -999999;
-                    return printf("식이 잘못되었습니다\n");
-            }
-
-            push(&st,value);
+    for (int i = 0; i < length; i++) {
+        ch = c[i];
+        //판별코드
+        if(ch == '(' || ch == '{' || ch == '[') push(&st, ch);
+        else if(ch == ')' || ch == '}' || ch == ']'){
+            open = pop(&st);
+            printf("%c %c\n", open, ch);
+            if((open == '(' && ch == ')') || (open == '{' && ch == '}') || (open == '[' && ch == ']')) continue;
+            else return 0;
         }
     }
+    //스택이 비었는지 확인
+    if (is_empty(&st) == 0) {
+        return 0;
+    }
 
-    return pop(&st); // 마지막 연산 결과 반환.
-
+    return 1; //괄호 검사가 모두 정상적으로 끝나면 1반환 -> 오류 없음
 }
 
-
 int main(void) {
-    printf("후위표기식은 : 43+52-*2+\n");
-    printf("결과값은 %d\n", calc_postfix("43+52-*2+"));
+    char* p = "{A[(i+1)]=0;}";
+    if (is_match(p))
+        printf("%s 괄호 검사 성공!\n", p);
+    else
+        printf("%s 괄호 검사 실패!\n", p);
 
     return 0;
 }
