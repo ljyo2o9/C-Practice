@@ -1,74 +1,64 @@
-
 #include<stdio.h>
-#include<string.h>
-#define MAX_STACK_SIZE 100
+#include <stdlib.h>
+#include <time.h>
+#define MAX_QUEUE_SIZE 100
 
-struct stacks {
-    char stack[MAX_STACK_SIZE];
-    int top;
+struct Queue {
+    int data[MAX_QUEUE_SIZE];
+    int front, rear;
 };
 
-//스택 작성
-void init_stacks(struct stacks* st){
-    st->top = -1;
+void init_queue(struct Queue* q)
+{
+    q->front = -1;
+    q->rear = -1;
 }
 
-int is_empty(struct stacks* st){
-    return (st->top == -1);
+int is_full(struct Queue* q) {
+    return q->rear == MAX_QUEUE_SIZE - 1;
 }
 
-int is_full(struct stacks* st){
-    return (st->top == MAX_STACK_SIZE - 1);
+int is_empty(struct Queue* q) {
+    return q->rear == - 1;
 }
 
-void push(struct stacks* st, int item){
-    if(is_full(st)) printf("stacks is full");
+void enqueue(struct Queue* q, int item) {
+    if(is_full(q)) printf("is_full");
     else {
-        st->stack[++(st->top)] = item;
+        q->data[++q->rear] = item;
     }
 }
 
-int pop(struct stacks *st){
-    if(is_empty(st)){
-        printf("stacks is empty");
+int dequeue(struct Queue* q) {
+    if(is_empty(q)){
+        printf("is_empty");
         return -99999;
     } else {
-        return st->stack[(st->top)--];
+        return q->data[++q->front];
     }
-}
-
-
-int is_match(char* c) {
-    struct stacks st;
-    char ch, open;
-    long int length = strlen(c);
-    init_stacks(&st);
-
-    for (int i = 0; i < length; i++) {
-        ch = c[i];
-        //판별코드
-        if(ch == '(' || ch == '{' || ch == '[') push(&st, ch);
-        else if(ch == ')' || ch == '}' || ch == ']'){
-            open = pop(&st);
-            printf("%c %c\n", open, ch);
-            if((open == '(' && ch == ')') || (open == '{' && ch == '}') || (open == '[' && ch == ']')) continue;
-            else return 0;
-        }
-    }
-    //스택이 비었는지 확인
-    if (is_empty(&st) == 0) {
-        return 0;
-    }
-
-    return 1; //괄호 검사가 모두 정상적으로 끝나면 1반환 -> 오류 없음
 }
 
 int main(void) {
-    char* p = "{A[(i+1)]=0;}";
-    if (is_match(p))
-        printf("%s 괄호 검사 성공!\n", p);
-    else
-        printf("%s 괄호 검사 실패!\n", p);
+    struct Queue q;
+    int n, a;
+    
+    init_queue(&q);
+    printf("넣고싶은 값의 개수 : ");
+    scanf("%d", &n);
+    
+    printf("넣은 값 : ");
+    
+    for (int i = 0; i < n; i++) {
+        a = rand() % 100;
+        printf("%d ", a);
+        enqueue(&q, a);
+    }
+    
+    printf("\n출력한 값 : ");
 
+    for(int i = 0; i < n; i++){
+        printf("%d ", dequeue(&q));
+    }
+    printf("\n");
     return 0;
 }
