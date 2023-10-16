@@ -1,64 +1,85 @@
 #include<stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#define MAX_QUEUE_SIZE 100
+#define MAX_QUEUE_SIZE 5
 
 struct Queue {
     int data[MAX_QUEUE_SIZE];
     int front, rear;
 };
 
-void init_queue(struct Queue* q)
-{
-    q->front = -1;
-    q->rear = -1;
-}
-
-int is_full(struct Queue* q) {
-    return q->rear == MAX_QUEUE_SIZE - 1;
+void init_queue(struct Queue* q) {
+    q->front = 0;
+    q->rear = 0;
 }
 
 int is_empty(struct Queue* q) {
-    return q->rear == - 1;
+    return q->rear == q->front;
+}
+
+int is_full(struct Queue* q) {
+    return (q->rear + 1) % MAX_QUEUE_SIZE == q->front;
+}
+
+void print_queue(struct Queue* q) {
+    int i = q->front;
+    if (!is_empty(q)) {
+        while (i != q->rear) {
+            i = (i + 1) % MAX_QUEUE_SIZE;
+            printf("%d | ", q->data[i]);
+        }
+    }
+    printf("\n");
 }
 
 void enqueue(struct Queue* q, int item) {
-    if(is_full(q)) printf("is_full");
+    if (is_full(q)) printf("포화상태\n");
     else {
-        q->data[++q->rear] = item;
+        if(q->rear != MAX_QUEUE_SIZE - 1) q->data[++q->rear] = item;
+        else {
+            q->rear = 0;
+            q->data[q->rear] = item;
+        }
     }
 }
 
 int dequeue(struct Queue* q) {
-    if(is_empty(q)){
-        printf("is_empty");
+    if (is_empty(q)) {
+        printf("공백상태\n");
         return -99999;
-    } else {
-        return q->data[++q->front];
+    }
+    else {
+        if(q->front != MAX_QUEUE_SIZE - 1) return q->data[++q->front];
+        else {
+            q->front = 0;
+            return q->data[q->front];
+        }
     }
 }
 
 int main(void) {
     struct Queue q;
-    int n, a;
-    
     init_queue(&q);
-    printf("넣고싶은 값의 개수 : ");
-    scanf("%d", &n);
+//    enqueue(&q, 10);
+//    printf("%d\n", dequeue(&q));
+//    enqueue(&q, 10);
+//    printf("%d\n", dequeue(&q));
+//    enqueue(&q, 10);
+//    printf("%d\n", dequeue(&q));
+//    enqueue(&q, 10);
+//    printf("%d\n", dequeue(&q));
+//    enqueue(&q, 10);
+//    printf("%d\n", dequeue(&q));
+//    enqueue(&q, 10);
+//    printf("%d\n", dequeue(&q));
+//    enqueue(&q, 10);
+//    printf("%d\n", dequeue(&q));
     
-    printf("넣은 값 : ");
+    enqueue(&q, 10);    print_queue(&q);
+    enqueue(&q, 20);    print_queue(&q);
+    enqueue(&q, 30);    print_queue(&q);
+    dequeue(&q);    print_queue(&q);
+    dequeue(&q);    print_queue(&q);
+    dequeue(&q);    print_queue(&q);
+    enqueue(&q, 30);    print_queue(&q);
     
-    for (int i = 0; i < n; i++) {
-        a = rand() % 100;
-        printf("%d ", a);
-        enqueue(&q, a);
-    }
-    
-    printf("\n출력한 값 : ");
-
-    for(int i = 0; i < n; i++){
-        printf("%d ", dequeue(&q));
-    }
-    printf("\n");
     return 0;
 }
