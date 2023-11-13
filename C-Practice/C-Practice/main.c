@@ -81,77 +81,143 @@
 //    return 0;
 //}
 
+//#include "stdio.h"
+//#include "stdlib.h"
+//
+//struct Node {
+//    int data;
+//    struct Node* link;
+//};
+//
+//struct Node* head = NULL;
+//
+//void insert_first(int value) {
+//    struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+//    node -> data = value;
+//
+//    if(head == NULL) {
+//        head = node;
+//        node->link = node;
+//    }
+//    else {
+//        node->link = head->link;
+//        head->link = node;
+//    }
+//}
+//
+//void insert_last(int value) {
+//    struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+//    node -> data = value;
+//
+//    if (head == NULL){
+//        head = node;
+//        node->link = head;
+//    } else {
+//        node->link = head->link;
+//        head->link = node;
+//        head = node;
+//    }
+//}
+//
+//void delete_first(void) {
+//    struct Node* removed = head->link;
+//    head->link = removed -> link;
+//
+//    free(removed);
+//}
+//
+//void print_list(void) {
+//    struct Node* node = head->link;
+//
+//    if(head == NULL) return;
+//    do {
+//        printf("%d -> ", node->data);
+//        node = node->link;
+//    } while(node != head->link);
+//
+//    printf("\n");
+//}
+//
+//int main(void) {
+//    insert_first(10);
+//    insert_first(20);
+//    insert_first(30);
+//
+//    print_list();
+//
+//    insert_last(40);
+//
+//    print_list();
+//
+//    delete_first();
+//
+//    print_list();
+//
+//    return 0;
+//}
+
+// 이중 연결 리스트
+
 #include "stdio.h"
 #include "stdlib.h"
 
+//1. 노드 정의
 struct Node {
     int data;
-    struct Node* link;
+    struct Node* llink;
+    struct Node* rlink;
 };
 
-struct Node* head = NULL;
+struct Node* head;
 
-void insert_first(int value) {
-    struct Node* node = (struct Node*)malloc(sizeof(struct Node));
-    node -> data = value;
-    
-    if(head == NULL) {
-        head = node;
-        node->link = head;
-    }
-    else {
-        node->link = head->link;
-        head->link = node;
-    }
+void init(void) {
+    head->rlink = head;
+    head->llink = head;
 }
 
-void insert_last(int value) {
-    struct Node* node = (struct Node*)malloc(sizeof(struct Node));
-    node -> data = value;
+void insert(struct Node* before, int value) {
+    struct Node* new = (struct Node*)malloc(sizeof(struct Node));
     
-    if (head == NULL){
-        head = node;
-        node->link = head;
-    } else {
-        node->link = head->link;
-        head->link = node;
-        head = node;
-    }
+    new -> data = value;
+    new -> llink = before;
+    new -> rlink = before -> rlink;
+    
+    before -> rlink -> llink = new;
+    before -> rlink = new;
 }
 
-void delete_first(void) {
-    struct Node* removed = head->link;
-    head->link = removed -> link;
+void delete(struct Node* removed) {
+    if(removed == head) return;
+    
+    removed -> llink -> rlink = removed -> rlink;
+    removed -> rlink -> llink = removed -> llink;
     
     free(removed);
 }
 
-void print_list(void) {
-    struct Node* node = head->link;
-    
-    if(head == NULL) return;
-    do {
-        printf("%d -> ", node->data);
-        node = node->link;
-    } while(node != head->link);
-    
+void print_list(struct Node* head) {
+    struct Node* p;
+    for (p = head->rlink; p != head; p = p->rlink) {
+        printf("<- %d -> ", p->data);
+    }
     printf("\n");
 }
 
 int main(void) {
-    insert_first(10);
-    insert_first(20);
-    insert_first(30);
+    head = (struct Node*)malloc(sizeof(struct Node));
+    init();
     
-    print_list();
+    printf("삽입 단계\n");
+    for (int i = 0; i < 5; i++) {
+        insert(head, i);
+        print_list(head);
+    }
     
-    insert_last(40);
-    
-    print_list();
-    
-    delete_first();
-    
-    print_list();
+    printf("\n삭제 단계\n");
+    for (int i = 0; i < 5; i++) {
+        delete(head -> rlink);
+        print_list(head);
+    }
     
     return 0;
 }
