@@ -3,33 +3,59 @@
 
 struct Treenode {
     int data;
-    struct Treenode* left, * right;
+    struct Treenode *left, *right;
 };
 
-struct Treenode n1 = { 1, NULL, NULL };
-struct Treenode n2 = { 3, NULL, NULL };
-struct Treenode n3 = { 6, NULL, NULL };
-struct Treenode n4 = { 2, &n1, &n2 };
-struct Treenode n5 = { 5, NULL, &n3 };
-struct Treenode n6 = { 4, &n4, &n5 };
-struct Treenode* root = &n6;
-
 struct Treenode* search(struct Treenode* node, int key) {
-    while (node != NULL) {
-        if (key == node->data) return node;
-        else if (key < node->data) return node = node->left;
-        else return node = node->right;
-    }
-    return NULL;
+    if (node == NULL) return NULL;
+    if (key == node->data) return node;
+    else if (key < node->data) return search(node -> left, key);
+    else return search(node -> right, key);
+}
+
+struct Treenode* new_node(int key) {
+    struct Treenode* new = (struct Treenode*)malloc(sizeof(struct Treenode));
+    
+    new -> data = key;
+    new -> left = NULL;
+    new -> right = NULL;
+    
+    return new;
+}
+
+struct Treenode* insert(struct Treenode* node, int key) {
+    if (node == NULL) return new_node(key);
+
+    if (node->data > key)
+        node->left = insert(node->left, key);
+    else if (node->data < key)
+        node->right = insert(node->right, key);
+
+    return node;
 }
 
 int main(void){
-    int n = 1;
-
-    if (search(root, n) != NULL) {
-        printf("%d은 찾을 수 있습니다.\n", n);
-    } else {
-        printf("%d은 찾을 수 없습니다.\n", n);
+    struct Treenode* tree = NULL;
+    int n;
+    
+    while(1){
+        printf("삽입(0을 입력하면 원하는 값을 찾음) : ");
+        scanf("%d", &n);
+        if(n == 0) break;
+        
+        tree = insert(tree, n);
+    }
+    
+    while(1){
+        printf("찾고 싶은 값 : ");
+        scanf("%d", &n);
+        if(n == 0) break;
+        
+        if(search(tree, n) != NULL){
+            printf("%d(는)은 있음\n", n);
+        } else {
+            printf("%d(는)은 없음\n", n);
+        }
     }
 
     return 0;
