@@ -3,7 +3,7 @@
 
 struct Treenode {
     int data;
-    struct Treenode *left, *right;
+    struct Treenode* left, * right;
 };
 
 struct Treenode n1 = { 1, NULL, NULL };
@@ -15,20 +15,22 @@ struct Treenode n6 = { 4, &n4, &n5 };
 struct Treenode* root = &n6;
 
 struct Treenode* search(struct Treenode* node, int key) {
-    if (node == NULL) return NULL;
-    if (key == node->data) return node;
-    else if (key < node->data) return search(node -> left, key);
-    else return search(node -> right, key);
+    while (node != NULL) {
+        if (key == node->data) return node;
+        else if (key < node->data) return node = node->left;
+        else return node = node->right;
+    }
+    return NULL;
 }
 
 int main(void){
-    int n = 6;
-    
+    int n = 1;
+
     if (search(root, n) != NULL) {
         printf("%d은 찾을 수 있습니다.\n", n);
     } else {
         printf("%d은 찾을 수 없습니다.\n", n);
     }
-    
+
     return 0;
 }
