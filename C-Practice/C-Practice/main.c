@@ -1,55 +1,34 @@
-#include "stdio.h"
-#include "stdlib.h"
+#include<stdio.h>
+#include<stdlib.h>
 
-struct TreeNode {
+struct Treenode {
     int data;
-    struct TreeNode *left, *right;
+    struct Treenode *left, *right;
 };
 
-struct TreeNode n1 = { 4, NULL, NULL };
-struct TreeNode n2 = { 5, NULL, NULL };
-struct TreeNode n3 = { 6, NULL, NULL };
-struct TreeNode n4 = { 2, &n1, &n2 };
-struct TreeNode n5 = { 3, NULL, &n3 };
-struct TreeNode n6 = { 1, &n4, &n5 };
-struct TreeNode* root = &n6;
+struct Treenode n1 = { 1, NULL, NULL };
+struct Treenode n2 = { 3, NULL, NULL };
+struct Treenode n3 = { 6, NULL, NULL };
+struct Treenode n4 = { 2, &n1, &n2 };
+struct Treenode n5 = { 5, NULL, &n3 };
+struct Treenode n6 = { 4, &n4, &n5 };
+struct Treenode* root = &n6;
 
-void ino(struct TreeNode* root) {
-    if (root != NULL) {
-        ino(root->left);
-        printf("%d", root->data);
-        ino(root->right);
-    }
+struct Treenode* search(struct Treenode* node, int key) {
+    if (node == NULL) return NULL;
+    if (key == node->data) return node;
+    else if (key < node->data) return search(node -> left, key);
+    else return search(node -> right, key);
 }
 
-void pre(struct TreeNode* root) {
-    if (root != NULL) {
-        printf("%d", root->data);
-        pre(root->left);
-        pre(root->right);
+int main(void){
+    int n = 6;
+    
+    if (search(root, n) != NULL) {
+        printf("%d은 찾을 수 있습니다.\n", n);
+    } else {
+        printf("%d은 찾을 수 없습니다.\n", n);
     }
-}
-
-void pos(struct TreeNode* root) {
-    if (root != NULL) {
-        pos(root->left);
-        pos(root->right);
-        printf("%d", root->data);
-    }
-}
-
-int main(void) {
-    printf("중위 순회 = ");
-    ino(root);
-    printf("\n");
-
-    printf("전위 순회 = ");
-    pre(root);
-    printf("\n");
-
-    printf("후위 순회 = ");
-    pos(root);
-    printf("\n");
-
+    
     return 0;
 }
